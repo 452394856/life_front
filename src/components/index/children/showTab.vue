@@ -1,27 +1,32 @@
 <template>
   <div>
-    <group style="padding-top:-20px;">
-      <x-button type="primary" plain @click.native="showPlugin">{{ date }}</x-button>
-    </group>
-    <divider>账单</divider>
-    <div class="wrapper" ref="wrapper">
-      <ul class="content">
-      </ul>
+    <div id="headtop">
+      <group style="margin-top:-60px;height: 10%">
+        <x-button type="primary" @click.native="showPlugin">{{ date }}</x-button>
+      </group>
     </div>
-    <!--<scroller lock-x scrollbar-y height="-123px">-->
-      <!--<div>-->
-        <!--<div v-for="tab in table">-->
-          <!--<scroller lock-y scrollbar-x>-->
-            <!--<div class="box">-->
-              <!--<span>{{tab.time}}</span>-->
-              <!--<span>金额：{{tab.money}}</span>-->
-              <!--<span>记录人：{{tab.name}}</span>-->
-            <!--</div>-->
-          <!--</scroller>-->
-          <!--&lt;!&ndash;<divider>…</divider>&ndash;&gt;-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</scroller>-->
+
+    <div class="wrapper" ref="wrapper" style="overflow: hidden;border-top: solid gray;">
+      <div class="content" style="margin-top: 0px">
+        <div style="padding-top: 3px;padding-bottom: 3px;border-bottom: solid;height: 70px" v-for="tab in table"
+             @click="showComment(tab.comment)">
+          <div style="margin-left:5px;float: left;height: 100%;width: 15%;background: #7EC0EE;text-align: center"><p
+            style="line-height: 35px;font-size: large">{{tab.time}}</p></div>
+          <div style=" margin-left:5px;float: left;height: 30px;width: 40%;background: #D4D4D4"><p
+            style="line-height: 0px;font-size: large">出资人：{{tab.name}}</p></div>
+          <div style=" margin-left:5px;float: left;height: 30px;width: 40%;background: #D4D4D4"><p
+            style="line-height: 0px;font-size: large">金额：{{tab.money}}</p></div>
+          <div style="margin-top:5px; margin-left:5px;float: left;height: 35px;width: 81%;background: #D4D4D4">
+            <p style="line-height: 0px;font-size: large;float: left">消费：</p>
+            <p style="line-height: 0px;font-size: large;float: left" v-for="user in tab.users">
+              {{user.pay_user_name}};</p>
+            <button style="float: right;height: 100%;background: red;font-weight: bold;z-index: 100"
+                    @click="confirm(tab.id, $event)">删 除
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -35,36 +40,59 @@
     data() {
       return {
         date: '',
-        table: ''
+        table: '',
+        height: ''
       }
     },
 
     mounted() {
-      console.log(getToken());
       let date = new Date();
       let year = date.getFullYear();
       let month = date.getMonth() + 1;
       month = (month < 10 ? "0" + month : month);
       this.date = (year.toString() + '-' + month.toString());
       this.getTable();
-      this.$nextTick(() => {
-        this.scroll = new Bscroll(this.$refs.wrapper, {})
+
+      window.onresize = () => {
+        $(".wrapper").height($(window).height() - $(".weui-tabbar").height() - $("#headtop").height());
+      };
+
+      this.$nextTick(function () {
+        $(".wrapper").height($(window).height() - $(".weui-tabbar").height() - $("#headtop").height());
+        this.setScroll();
       })
     },
     components: {
       Datetime,
       Group,
       XButton,
-      BScroll,
       Divider
     },
     methods: {
+      setScroll() {
+        delete this.scroll;
+        this.scroll = new BScroll(this.$refs.wrapper, {
+          scrollY: true,
+          scrollX: true,
+          click: true
+        })
+      },
       showPlugin() {
         let self = this;
+        let startDate = (new Date()).getFullYear() - 1;
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        month = (month < 10 ? "0" + month : month);
+        let endDate = (year.toString() + '-' + month.toString());
         this.$vux.datetime.show({
           cancelText: '取消',
           confirmText: '确定',
           format: 'YYYY-MM',
+          yearRow: '{value}年',
+          startDate: startDate.toString(),
+          endDate: endDate,
+          monthRow: '{value}月',
           value: this.date,
           onConfirm(val) {
             self.date = val;
@@ -84,7 +112,6 @@
           async: false,
           type: 'post',
           success: function (data, status) {
-            console.log(data);
             if (data.code == 0) {
               self.table = data.data;
             } else if (data.code == 401) {
@@ -96,41 +123,60 @@
             }
           }
         })
+      },
+      confirm(id, event) {
+        event.stopPropagation();
+        let self = this;
+        this.$vux.confirm.show({
+          title: '您是否要删除？',
+          confirmText: '确认',
+          cancelText: '取消',
+          onConfirm() {
+            self.delTab(id);
+          }
+        });
+
+      }
+      ,
+      delTab(id) {
+
+        let self = this;
+        let url = baseUrl + '/api/del';
+        let data = {id: id, token: getToken()};
+        $.ajax({
+          url: url,
+          type: 'post',
+          data: data,
+          success: function (data) {
+            if (data.code == 0) {
+              self.$vux.toast.text(data.data.message, 'middle');
+            } else if (data.code == 444) {
+              self.$vux.toast.text(data.data, 'middle');
+            } else {
+              self.$vux.toast.text('未知错误', 'middle');
+            }
+            self.getTable();
+            self.$nextTick(function () {
+              self.setScroll();
+            });
+
+          }
+        })
+      },
+      showComment(comment) {
+        this.$vux.alert.show({
+          title: '备注',
+          content: comment,
+          buttonText: '关闭',
+//          hideOnBlur: true,
+          onShow() {
+          },
+          onHide() {
+          }
+        })
       }
     }
-
   }
 </script>
 <style>
-  .box {
-    height: 50px;
-    text-align: left;
-    padding-top: 20px;
-  }
-
-  .box1 {
-    height: 100px;
-    position: relative;
-    width: 1490px;
-  }
-
-  .box1-item {
-    width: 200px;
-    height: 100px;
-    background-color: #ccc;
-    display: inline-block;
-    margin-left: 15px;
-    float: left;
-    text-align: center;
-    line-height: 100px;
-  }
-
-  .box1-item:first-child {
-    margin-left: 0;
-  }
-
-  .box2-wrap {
-    height: 300px;
-    overflow: hidden;
-  }
 </style>

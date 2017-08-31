@@ -3,8 +3,8 @@
     <h1>life</h1>
 
     <group>
-      <x-input title="用户名" placeholder="请输入用户名" v-model="username" placeholder-align="right"></x-input>
-      <x-input title="密码" placeholder="请输入密码" v-model="password" type="password" placeholder-align="right"></x-input>
+      <x-input title="用户名" placeholder="请输入用户名" v-model="username" text-align="right" placeholder-align="right"></x-input>
+      <x-input title="密码" placeholder="请输入密码" v-model="password" type="password" text-align="right" placeholder-align="right"></x-input>
       <x-button type="primary" @click.native="submit()">登录</x-button>
     </group>
     <!--<mt-field label="用户名" placeholder="请输入用户名" v-model="username"></mt-field>-->

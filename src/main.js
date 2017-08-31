@@ -6,11 +6,13 @@ import router from './router'
 // import Mint from 'mint-ui';
 // import 'mint-ui/lib/style.css'
 import store from '@/store/store'
-import { ToastPlugin ,DatetimePlugin } from 'vux'
+import {ToastPlugin, DatetimePlugin, AlertPlugin, ConfirmPlugin} from 'vux'
 
 // Vue.use(Mint);
-Vue.use(ToastPlugin );
-Vue.use(DatetimePlugin );
+Vue.use(ToastPlugin);
+Vue.use(DatetimePlugin);
+Vue.use(AlertPlugin);
+Vue.use(ConfirmPlugin);
 
 Vue.config.productionTip = false
 
@@ -20,5 +22,5 @@ new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: {App}
 })
