@@ -3,9 +3,11 @@
     <div class="wrapper" ref="wrapper" style="overflow: hidden;border-top: solid gray;margin-top: -60px">
       <div class="content" style="margin-top: -20px">
         <group style="">
-          <datetime v-model="date" title="日期" start-date="2017-01-01" :end-date="date" year-row="{value}年" month-row="{value}月" day-row="{value}日"
+          <datetime v-model="date" title="日期" start-date="2017-01-01" :end-date="end_date" year-row="{value}年"
+                    month-row="{value}月" day-row="{value}日"
                     style=";padding-left: 24px;text-decoration:none;height: 50px;border-bottom: solid 1px"></datetime>
-          <x-input title="金额" placeholder="请输入金额" v-model="money" type="number" text-align="right" placeholder-align="right"
+          <x-input title="金额" placeholder="请输入金额" v-model="money" type="number" text-align="right"
+                   placeholder-align="right"
                    style=";height: 50px;border-bottom: solid 1px"></x-input>
           <divider>选择消费人</divider>
           <checker
@@ -14,9 +16,10 @@
             default-item-class="item"
             selected-item-class="item-selected"
           >
-            <checker-item v-for="list in checkList" :key="list.id" :value="list.id" >{{list.name}}</checker-item>
+            <checker-item v-for="list in checkList" :key="list.id" :value="list.id">{{list.name}}</checker-item>
           </checker>
-          <x-textarea :max="80" placeholder="备注" v-model="comment" style="margin-top: 5%;padding-left: 0px;border: solid 1px"></x-textarea>
+          <x-textarea :max="80" placeholder="备注" v-model="comment"
+                      style="margin-top: 5%;padding-left: 0px;border: solid 1px"></x-textarea>
           <x-button type="primary" @click.native="commit()" style="margin-top: 5%">提交</x-button>
         </group>
       </div>
@@ -28,10 +31,11 @@
   import $ from 'jquery';
   import BScroll from 'better-scroll'
   import {baseUrl} from '@/config/env.js'
-  import {getToken,getUserId} from '@/components/common/common'
-  import {Datetime,Group,XButton, XInput,XTextarea,Checker,CheckerItem,Divider } from 'vux';
+  import {getToken, getUserId} from '@/components/common/common'
+  import {Datetime, Group, XButton, XInput, XTextarea, Checker, CheckerItem, Divider} from 'vux';
+
   export default {
-    components:{
+    components: {
       Group,
       XButton,
       XInput,
@@ -41,40 +45,41 @@
       CheckerItem,
       Divider
     },
-    data(){
+    data() {
       return {
-        money:'',
-        comment:'',
-        date:'',
-        checkList:'',
-        checked:''
+        money: '',
+        comment: '',
+        date: '',
+        checkList: '',
+        checked: '',
+        end_date: ''
       }
     },
-    methods:{
-      setDefaultCheck(){
+    methods: {
+      setDefaultCheck() {
         let userId = getUserId();
         this.checked = [userId];//默认当前用户为消费人
       },
-      commit(){
-        if(this.money == ''){
+      commit() {
+        if (this.money == '') {
           this.$vux.toast.text('金额不能为空', 'middle');
           return;
         }
-        if(this.checked == ''){
+        if (this.checked == '') {
           this.$vux.toast.text('消费人不能为空', 'middle');
           return;
         }
         let userId = getUserId();
         let log = false;
 
-        for(let i in this.checked){
-          if(this.checked[i] == userId){
+        for (let i in this.checked) {
+          if (this.checked[i] == userId) {
             log = true;
             break;
           }
         }
 
-        if(!log){
+        if (!log) {
           this.$vux.toast.text('本人必须是消费人之一', 'middle');
           return;
         }
@@ -82,40 +87,40 @@
         let self = this;
         let url = baseUrl + '/api/add';
         let data = {
-          time:this.date,
-          money:this.money,
-          check:this.checked,
+          time: this.date,
+          money: this.money,
+          check: this.checked,
           comment: this.comment,
           token: getToken()
         };
         $.ajax({
-          url:url,
-          type:'post',
-          data:data,
-          success:function (data) {
-            if(data.code == 0){
+          url: url,
+          type: 'post',
+          data: data,
+          success: function (data) {
+            if (data.code == 0) {
               self.$vux.toast.text(data.data.message, 'middle');
               //初始化数据
               self.date = self.getDate();
               self.money = '';
               self.setDefaultCheck();
               self.comment = '';
-            }else if(data.code = 444){
+            } else if (data.code = 444) {
               self.$vux.toast.text(data.data, 'middle');
-            }else {
+            } else {
               self.$vux.toast.text('未知错误', 'middle');
             }
           }
         })
       },
-      getUserList(){
+      getUserList() {
         let self = this;
         let url = baseUrl + '/api/user_list?token=' + getToken();
         $.ajax({
-          url:url,
+          url: url,
           type: 'get',
-          success:function (data) {
-            if(data.code == 0){
+          success: function (data) {
+            if (data.code == 0) {
               self.checkList = data.data;
             } else if (data.code == 401) {
               self.$vux.toast.text('登录过期，请重新登录', 'middle');
@@ -127,7 +132,7 @@
           }
         })
       },
-      getDate(){
+      getDate() {
         let myDate = new Date();
         let seperator1 = "-";
         let year = myDate.getFullYear();
@@ -143,9 +148,10 @@
         return year + seperator1 + month + seperator1 + strDate;
       }
     },
-    created(){
+    created() {
       this.setDefaultCheck();
       this.date = this.getDate();
+      this.end_date = this.date;
 
     },
     mounted() {
@@ -159,7 +165,7 @@
         $(".wrapper").height($(window).height() - $(".weui-tabbar").height());
         this.scroll = new BScroll(this.$refs.wrapper, {
           scrollY: true,
-          click:true
+          click: true
         })
       })
     }
@@ -176,6 +182,7 @@
     background-color: #fff;
     margin-right: 6px;
   }
+
   .item-selected {
     background: #ffffff url(../../../assets/add/active.png) no-repeat right bottom;
     border-color: #ff4a00;

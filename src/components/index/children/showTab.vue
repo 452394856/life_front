@@ -8,21 +8,20 @@
 
     <div class="wrapper" ref="wrapper" style="overflow: hidden;border-top: solid gray;">
       <div class="content" style="margin-top: 0px">
-        <div style="padding-top: 3px;padding-bottom: 3px;border-bottom: solid;height: 70px" v-for="tab in table"
-             @click="showComment(tab.comment)">
-          <div style="margin-left:5px;float: left;height: 100%;width: 15%;background: #7EC0EE;text-align: center"><p
+        <div style="padding-top: 3px;padding-bottom: 3px;;height: 70px ;border-radius:5px;margin-bottom: 5px;border: solid 1px" v-for="(tab, i) in table"
+             @click="showComment(tab.comment)" :class="tabClass(i)">
+          <div style="margin-left:5px;float: left;height: 100%;width: 15%;background: #7EC0EE;text-align: center" :class="tabClass(i)"><p
             style="line-height: 35px;font-size: large">{{tab.time}}</p></div>
-          <div style=" margin-left:5px;float: left;height: 30px;width: 40%;background: #D4D4D4"><p
+          <div style=" margin-left:5px;float: left;height: 30px;width: 40%;background: #D4D4D4" :class="tabClass(i)"><p
             style="line-height: 0px;font-size: large">出资人：{{tab.name}}</p></div>
-          <div style=" margin-left:5px;float: left;height: 30px;width: 40%;background: #D4D4D4"><p
+          <div style=" margin-left:5px;float: left;height: 30px;width: 40%;background: #D4D4D4" :class="tabClass(i)"><p
             style="line-height: 0px;font-size: large">金额：{{tab.money}}</p></div>
-          <div style="margin-top:5px; margin-left:5px;float: left;height: 35px;width: 81%;background: #D4D4D4">
+          <div style="margin-top:5px; margin-left:5px;float: left;height: 35px;width: 81%;background: #D4D4D4" :class="tabClass(i)">
             <p style="line-height: 0px;font-size: large;float: left">消费：</p>
             <p style="line-height: 0px;font-size: large;float: left" v-for="user in tab.users">
               {{user.pay_user_name}};</p>
-            <button style="float: right;height: 100%;background: red;font-weight: bold;z-index: 100"
-                    @click="confirm(tab.id, $event)">删 除
-            </button>
+            <img style="float: right;height: 100%;z-index: 100" src="../../../assets/del.png"
+                    @click="confirm(tab.id, $event)">
           </div>
         </div>
       </div>
@@ -58,7 +57,6 @@
       };
 
       this.$nextTick(function () {
-        $(".wrapper").height($(window).height() - $(".weui-tabbar").height() - $("#headtop").height());
         this.setScroll();
       })
     },
@@ -69,7 +67,15 @@
       Divider
     },
     methods: {
+      tabClass(index){
+        if(index%2 == 0){
+          return 'double_tab';
+        }else {
+          return 'single_tab';
+        }
+      },
       setScroll() {
+        $(".wrapper").height($(window).height() - $(".weui-tabbar").height() - $("#headtop").height());
         delete this.scroll;
         this.scroll = new BScroll(this.$refs.wrapper, {
           scrollY: true,
@@ -97,6 +103,9 @@
           onConfirm(val) {
             self.date = val;
             self.getTable();
+            self.$nextTick(function () {
+              self.setScroll();
+            });
           },
           onShow() {
           },
@@ -179,4 +188,10 @@
   }
 </script>
 <style>
+  .double_tab{
+    background-color: #9cfaff !important;
+  }
+  .single_tab{
+    background-color: pink !important;
+  }
 </style>
