@@ -8,14 +8,14 @@
 
     <div class="wrapper" ref="wrapper" style="overflow: hidden;border-top: solid gray;">
       <div class="content" style="margin-top: 0px">
-        <div style="padding-top: 3px;padding-bottom: 3px;;height: 70px ;border-radius:5px;margin-bottom: 5px;border: solid 1px" v-for="(tab, i) in table"
+        <div style="padding-top: 3px;padding-bottom: 3px;;height: 70px ;border-radius:8px;margin-bottom: 5px;" v-for="(tab, i) in table"
              @click="showComment(tab.comment)" :class="tabClass(i)">
           <div style="margin-left:5px;float: left;height: 100%;width: 15%;background: #7EC0EE;text-align: center" :class="tabClass(i)"><p
             style="line-height: 35px;font-size: large">{{tab.time}}</p></div>
           <div style=" margin-left:5px;float: left;height: 30px;width: 40%;background: #D4D4D4" :class="tabClass(i)"><p
-            style="line-height: 0px;font-size: large">出资人：{{tab.name}}</p></div>
+            style="line-height: 0px;font-size: large;float: left">付款人：{{tab.name}}</p></div>
           <div style=" margin-left:5px;float: left;height: 30px;width: 40%;background: #D4D4D4" :class="tabClass(i)"><p
-            style="line-height: 0px;font-size: large">金额：{{tab.money}}</p></div>
+            style="line-height: 0px;font-size: large;float: left">金额：{{tab.money}}</p></div>
           <div style="margin-top:5px; margin-left:5px;float: left;height: 35px;width: 81%;background: #D4D4D4" :class="tabClass(i)">
             <p style="line-height: 0px;font-size: large;float: left">消费：</p>
             <p style="line-height: 0px;font-size: large;float: left" v-for="user in tab.users">
@@ -84,32 +84,19 @@
         })
       },
       showPlugin() {
-        let self = this;
-        let startDate = (new Date()).getFullYear() - 1;
-        let date = new Date();
-        let year = date.getFullYear();
-        let month = date.getMonth() + 1;
-        month = (month < 10 ? "0" + month : month);
-        let endDate = (year.toString() + '-' + month.toString());
         this.$vux.datetime.show({
           cancelText: '取消',
           confirmText: '确定',
-          format: 'YYYY-MM',
-          yearRow: '{value}年',
-          startDate: startDate.toString(),
-          endDate: endDate,
-          monthRow: '{value}月',
-          value: this.date,
-          onConfirm(val) {
-            self.date = val;
-            self.getTable();
-            self.$nextTick(function () {
-              self.setScroll();
-            });
+          format: 'YYYY-MM-DD HH',
+          value: '2017-05-20 18',
+          onConfirm (val) {
+            console.log('plugin confirm', val)
           },
-          onShow() {
+          onShow () {
+            console.log('plugin show')
           },
-          onHide() {
+          onHide () {
+            console.log('plugin hide')
           }
         })
       },
@@ -189,9 +176,9 @@
 </script>
 <style>
   .double_tab{
-    background-color: #9cfaff !important;
+    background-color: lightblue !important;
   }
   .single_tab{
-    background-color: pink !important;
+    background-color: powderblue !important;
   }
 </style>
