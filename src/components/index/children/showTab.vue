@@ -84,19 +84,32 @@
         })
       },
       showPlugin() {
+        let self = this;
+        let startDate = (new Date()).getFullYear() - 1;
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        month = (month < 10 ? "0" + month : month);
+        let endDate = (year.toString() + '-' + month.toString());
         this.$vux.datetime.show({
           cancelText: '取消',
           confirmText: '确定',
-          format: 'YYYY-MM-DD HH',
-          value: '2017-05-20 18',
-          onConfirm (val) {
-            console.log('plugin confirm', val)
+          format: 'YYYY-MM',
+          yearRow: '{value}年',
+          startDate: startDate.toString(),
+          endDate: endDate,
+          monthRow: '{value}月',
+          value: this.date,
+          onConfirm(val) {
+            self.date = val;
+            self.getTable();
+            self.$nextTick(function () {
+              self.setScroll();
+            });
           },
-          onShow () {
-            console.log('plugin show')
+          onShow() {
           },
-          onHide () {
-            console.log('plugin hide')
+          onHide() {
           }
         })
       },
