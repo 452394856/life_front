@@ -86,7 +86,7 @@
       showPlugin() {
         let self = this;
         let startDate = (new Date()).getFullYear() - 1;
-        startDate = startDate.toString() + '01';
+        startDate = startDate.toString() + '-01';
         let date = new Date();
         let year = date.getFullYear();
         let month = date.getMonth() + 1;
