@@ -83,11 +83,12 @@
       showPlugin() {
         let self = this;
         let startDate = (new Date()).getFullYear() - 1;
+        startDate = startDate.toString() + '-01-01';
         let date = new Date();
         let year = date.getFullYear();
         let month = date.getMonth() + 1;
         month = (month < 10 ? "0" + month : month);
-        let endDate = (year.toString() + '-' + month.toString());
+        let endDate = year.toString() + '-' + month.toString() + '-01';
         this.$vux.datetime.show({
           cancelText: '取消',
           confirmText: '确定',
