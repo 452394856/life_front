@@ -123,8 +123,4 @@
   }
 </script>
 <style>
-  body {
-    position: static !important;
-    /*width: 100%;*/
-  }
 </style>
