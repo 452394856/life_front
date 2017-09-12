@@ -123,21 +123,8 @@
   }
 </script>
 <style>
-  .modal-open {
+  body {
     position: static !important;
     /*width: 100%;*/
-  }
-
-  .position-horizontal-demo {
-    position: relative;
-    height: 100%;
-  }
-
-  .position-horizontal-demo .vux-close {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%) scale(4);
-    color: #000;
   }
 </style>
