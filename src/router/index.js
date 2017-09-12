@@ -50,7 +50,7 @@ let router = new Router({
 router.beforeEach((to, from, next) => {
 
   if (to.path != '/' && to.path != '') {
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
     let time = Math.ceil((new Date()).valueOf() / 1000) + 200;
     if (userInfo == undefined || userInfo.token == undefined || time > userInfo.time) {
       alert('登录过期，请重新登录');

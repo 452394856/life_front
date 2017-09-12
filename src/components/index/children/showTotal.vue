@@ -13,8 +13,6 @@
         <divider>{{Math.abs(reduce)}}元</divider>
       </group>
     </div>
-
-
   </div>
 </template>
 <script>
@@ -94,7 +92,7 @@
           confirmText: '确定',
           format: 'YYYY-MM',
           yearRow: '{value}年',
-          startDate: startDate.toString(),
+          startDate: startDate,
           endDate: endDate,
           monthRow: '{value}月',
           value: this.date,
