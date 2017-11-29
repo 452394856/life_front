@@ -1,5 +1,5 @@
 /**
  * 配置文件
  */
-let baseUrl = 'https://life_back.kxcloud.org/';
+let baseUrl = 'http://192.168.6.50:1234/';
 export {baseUrl}

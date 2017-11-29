@@ -13,6 +13,9 @@
     <!--<mt-field label="用户名" placeholder="请输入用户名" v-model="username"></mt-field>-->
     <!--<mt-field label="密码" placeholder="请输入密码" type="password" v-model="password"></mt-field>-->
     <!--<mt-button type="primary" size="large" @click="submit">登录</mt-button>-->
+    <group style="margin-top: 50%;border:none !important;">
+      <a href="http://www.miitbeian.gov.cn/" style="text-decoration:none;color: black">蜀ICP备17040103号-1</a>
+    </group>
   </div>
 </template>
 <script>
